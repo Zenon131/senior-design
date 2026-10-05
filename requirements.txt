@@ -1,0 +1,7 @@
+numpy
+matplotlib
+scipy
+# Match matlabengine version to your installed MATLAB release.
+# For MATLAB R2024b use:  python -m pip install matlabengine==24.2.2
+# For MATLAB R2026a use:  python -m pip install matlabengine==26.1.12
+# See https://pypi.org/project/matlabengine/ for the full version mapping.

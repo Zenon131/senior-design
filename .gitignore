@@ -1,0 +1,30 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.pyc
+*$py.class
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Environment and IDE
+.venv/
+env/
+venv/
+.idea/
+.vscode/
+/diagnostics/
+
+# Generated outputs and temporary files
+*.png
+*.csv
+*.txt
+!requirements.txt
+MODEL_MATH_SUMMARY.txt
+
+# Detailed markdown reports (optional)
+WORKFLOW.md
+SIMULATION_REPORT.md
