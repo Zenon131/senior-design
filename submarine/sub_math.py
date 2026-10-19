@@ -9,12 +9,12 @@ FT3_TO_M3 = 0.02831685  # 1 ft^3 = 0.02831685 m^3
 P_ATM = 101325          # Standard atmospheric pressure in Pa (1 atm)
 
 # sample cross sectional areas in ft^2
-csa_1 = 12 * 18  # 216 ft^2
-csa_2 = 16 * 16  # 256 ft^2
-csa_3 = 18 * 18  # 324 ft^2
+csa_1 = 1 * 1.5  # 216 ft^2
+csa_2 = 1.2 * 1.2  # 256 ft^2
+csa_3 = 1.5 * 1.5  # 324 ft^2
 
 # sample submarine hull length in ft
-sub_length_ft = 5.0  # 5 feet long
+sub_length_ft = 3.0  # 5 feet long
 
 # gauge pressure formula: rho*g*h (Pa)
 def pressure(rho, g, h):
@@ -108,5 +108,6 @@ def graph_pressure_force(depths, hydro_forces, crush_forces):
     fig.tight_layout()
     plt.title('Submarine Force vs. Depth (CSA = 216 ft^2)')
     plt.show()
+
 
 graph_pressure_force(depth_list, hydro_force_list, crush_force_list)
