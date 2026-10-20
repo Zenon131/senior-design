@@ -4,17 +4,24 @@ Prelimenary calculations for an autonomous survey submarine
 
 import matplotlib.pyplot as plt
 
-FT2_TO_M2 = 0.09290304  # 1 ft^2 = 0.09290304 m^2
-FT3_TO_M3 = 0.02831685  # 1 ft^3 = 0.02831685 m^3
-P_ATM = 101325          # Standard atmospheric pressure in Pa (1 atm)
+FT2_TO_M2 = 0.09290304 # 1 ft^2 = 0.09290304 m^2
+FT3_TO_M3 = 0.02831685 # 1 ft^3 = 0.02831685 m^3
+P_ATM = 101325 # Standard atmospheric pressure in Pa (1 atm)
 
-# sample cross sectional areas in ft^2
-csa_1 = 1 * 1.5  # 216 ft^2
-csa_2 = 1.2 * 1.2  # 256 ft^2
-csa_3 = 1.5 * 1.5  # 324 ft^2
+# sample cross sectional dimensions in ft (width, height)
+w_1, h_1 = 1.0, 1.5
+csa_1 = w_1 * h_1
+perimeter_1 = 2 * (w_1 + h_1)
+
+csa_2 = 1.25 * 1.25
+csa_3 = 1.5 * 1.5
 
 # sample submarine hull length in ft
-sub_length_ft = 3.0  # 5 feet long
+sub_length_ft = 3.0  # 3 feet long
+
+# total outer surface area in ft^2 (2 end caps + lateral perimeter * length)
+surface_area_1_ft2 = 2 * csa_1 + perimeter_1 * sub_length_ft
+print(f"surface area = {surface_area_1_ft2} ft^2")
 
 # gauge pressure formula: rho*g*h (Pa)
 def pressure(rho, g, h):
@@ -25,8 +32,8 @@ def absolute_pressure(rho, g, h, p_atm=P_ATM):
     return pressure(rho, g, h) + p_atm
 
 # force due to pressure: P * A (N)
-def pressure_force(pressure_pa, csa_ft2):
-    return pressure_pa * (csa_ft2 * FT2_TO_M2)
+def pressure_force(pressure_pa, area_ft2):
+    return pressure_pa * (area_ft2 * FT2_TO_M2)
 
 # buoyancy force: F_b = rho * g * V_displaced (N)
 def buoyant_force(rho, g, volume_ft3):
@@ -44,8 +51,8 @@ def net_buoyancy(f_buoyant, weight_sub_n):
 
 # relevant params
 rho_water = 1025 # kg/m³ (seawater)
-g = 9.81         # m/s^2
-h = 0            # m
+g = 9.81 # m/s^2
+h = 0 # m
 
 # Buoyancy calculations for CSA 1 (Volume = CSA * length)
 v_displaced_ft3 = csa_1 * sub_length_ft
@@ -65,14 +72,14 @@ abs_p_list = []
 hydro_force_list = []
 crush_force_list = []
 
-print("=== PRESSURE & FORCE VS DEPTH ===")
+print("PRESSURE & FORCE VS DEPTH")
 # calculations at different pressures from 0-50m
 while h <= 50:
     p_gauge = pressure(rho_water, g, h)
     p_abs = absolute_pressure(rho_water, g, h)
     
-    f_hydro = pressure_force(p_gauge, csa_1)
-    f_crush = pressure_force(p_abs, csa_1)
+    f_hydro = pressure_force(p_gauge, surface_area_1_ft2)
+    f_crush = pressure_force(p_abs, surface_area_1_ft2)
     
     depth_list.append(h)
     gauge_p_list.append(p_gauge / 1000.0)    # kPa
@@ -85,6 +92,7 @@ while h <= 50:
         print(f"  Gauge Pressure:    {p_gauge:.2f} Pa ({p_gauge/1000:.2f} kPa)")
         print(f"  Absolute Pressure: {p_abs:.2f} Pa ({p_abs/1000:.2f} kPa)")
         print(f"  Hydrostatic Force: {f_hydro:.2f} N ({f_hydro/1000:.2f} kN)")
+        print(f"  Buoyancy:          {f_buoyancy:.2f} N ({f_buoyancy/1000:.2f} kN)")
         print(f"  Crushing Force:    {f_crush:.2f} N ({f_crush/1000:.2f} kN)\n")
     
     h += 1
@@ -106,7 +114,7 @@ def graph_pressure_force(depths, hydro_forces, crush_forces):
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()
-    plt.title('Submarine Force vs. Depth (CSA = 216 ft^2)')
+    plt.title(f'Submarine Force vs. Depth (Surface Area = {surface_area_1_ft2:.1f} ft^2)')
     plt.show()
 
 
